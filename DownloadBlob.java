@@ -38,7 +38,7 @@ public class DownloadBlob {
 				InputStream is = rs.getBinaryStream(1);
 				String str = convert(is);
 
-				outputStream.write(str.getBytes());
+				outputStream.write(str.getBytes("UTF-8"));
 			}
 			outputStream.close();
 			System.out.println("File Generated: " + fileName);
@@ -69,11 +69,11 @@ public class DownloadBlob {
 				buf.write((byte) result);
 				result = bis.read();
 			}
-			str = buf.toString("UTF-8");
+			str = buf.toString().replaceAll("\\P{Print}", "");
+			System.out.print(str);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return str;
 	}
-
 }
