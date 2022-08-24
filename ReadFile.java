@@ -4,14 +4,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.String;
 import java.io.ByteArrayOutputStream;
-
 import javax.script.ScriptException;
-// import javax.print.StreamPrintService;
-// import javax.script.ScriptEngineManager;
-// import javax.script.ScriptEngine;
-// import java.util.regex.Pattern;
-
-// import java.util.regex.Matcher;
+import java.io.InputStream;
 
 public class ReadFile {
     public static void main(String[] args) throws ScriptException {
@@ -21,38 +15,43 @@ public class ReadFile {
              * line one character at a time
              */
 
+            String fileName = args[0];
             File input = new File(args[0]);
-            FileInputStream in = new FileInputStream(input);
-            FileOutputStream out = new FileOutputStream("output.txt");
+            String extension = "";
+
+            int i = fileName.lastIndexOf('.');
+            int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = fileName.substring(i + 1);
+            }
+
+            FileInputStream fin = new FileInputStream(input);
+            FileOutputStream fout = new FileOutputStream("output.txt");
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
 
-            int c;
             String str;
+            if (extension != "bin") {
+                // assumed the file is long raw and review the code.
+            }
 
-            while ((c = in.read()) != -1) {
+            int c;
+
+            while ((c = fin.read()) != -1) {
                 buf.write((byte) c);
             }
 
-            str = buf.toString().replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}]", "?");
-            str = str.replaceAll("\\ ", "*");
-            str = str.replaceAll("\\?", " ");
-            str = str.replaceAll("\\�", "");
-            str = str.replaceAll("\\     ", "*");
-            str = str.replaceAll("\\   ", "*");
-            str = str.replaceAll("\\    ", "*");
-            str = str.replaceAll("\\ ", "");
-            str = str.replaceAll("\\*", " ");
+            // InputStream ascStream = InputStream getAsciiStream();
 
-            // ScriptEngineManager manager = new ScriptEngineManager();
-            // ScriptEngine engine = manager.getEngineByName("JavaScript");
-            // String returnValue = (String) engine.eval("return regularExpStr(`" + str + "`)");
-            // System.out.print(returnValue);
-            out.write(str.getBytes("UTF-8"));
-            if (in != null) {
-                in.close();
+            str = buf.toString();
+            str = clearUndefined(str);
+
+            fout.write(str.getBytes("UTF-8"));
+            if (fin != null) {
+                fin.close();
             }
-            if (out != null) {
-                out.close();
+            if (fout != null) {
+                fout.close();
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             /*
@@ -67,5 +66,19 @@ public class ReadFile {
             e.printStackTrace();
         }
 
+    }
+
+    private static String clearUndefined(String str) {
+        str = str.replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}]", "?");
+        str = str.replaceAll("\\ ", "*");
+        str = str.replaceAll("\\?", " ");
+        str = str.replaceAll("\\�", "");
+        str = str.replaceAll("\\     ", "*");
+        str = str.replaceAll("\\   ", "*");
+        str = str.replaceAll("\\    ", "*");
+        str = str.replaceAll("\\ ", "");
+        str = str.replaceAll("\\*", " ");
+
+        return str;
     }
 }

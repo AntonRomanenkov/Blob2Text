@@ -66,11 +66,12 @@ public class DownloadBlob {
 			result = bis.read();
 
 			while (result != -1) {
+				System.out.print(result);
+				System.out.print("\n");
 				buf.write((byte) result);
 				result = bis.read();
 			}
 			str = buf.toString().replaceAll("\\P{Print}", "");
-			System.out.print(str);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
